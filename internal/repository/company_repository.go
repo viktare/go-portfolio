@@ -11,7 +11,6 @@ import (
 
 func CreateCompany(pool *pgxpool.Pool, input models.CreateCompanyDTO) (*models.Company, error) {
 	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
-
 	defer cancel()
 
 	query := `
@@ -19,16 +18,16 @@ func CreateCompany(pool *pgxpool.Pool, input models.CreateCompanyDTO) (*models.C
 		VALUES ($1, $2, $3, $4)
 		RETURNING id, name, address, website, logo
 	`
-	var company models.Company
 
+	var company models.Company
 	err := pool.QueryRow(ctx, query, input.Name, input.Address, input.Website, input.Logo).Scan(
-		&company.ID,
-		&company.Name,
-		&company.Address,
-		&company.Website,
+		&company.ID, 
+		&company.Name, 
+		&company.Address, 
+		&company.Website, 
 		&company.Logo,
 	)
-
+	
 	if err != nil {
 		return nil, err
 	}

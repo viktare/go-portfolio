@@ -5,9 +5,9 @@ package models
 // =============================================================================
 
 type TechnologyField struct {
-	ID      int `json:"id"`
-	Name string `json:"name"` // "Backend"
-	Code string `json:"code"` // "backend"
+    ID   string `json:"id"`
+    Name string `json:"name"`
+    Code string `json:"code"`
 }
 
 // =============================================================================
@@ -15,19 +15,19 @@ type TechnologyField struct {
 // =============================================================================
 
 type Technology struct {
-	ID    int             `json:"id"`
-	Name  string          `json:"name"`  // "Php - Laravel"
-	Code  string          `json:"code"`  // "laravel" (unique)
-	Field TechnologyField `json:"field"`
+    ID    string          `json:"id"`
+    Name  string          `json:"name"`
+    Code  string          `json:"code"`
+    Field TechnologyField `json:"field"`
 }
 
 type CreateTechnology struct {
-	Name    string `json:"name"`
-	Code    string `json:"code"`
-	FieldID string `json:"fieldId"`
+    Name    string `json:"name"`
+    Code    string `json:"code"`
+    FieldID string `json:"fieldId"`
 }
 
 type UpdateTechnology struct {
-	Name    string `json:"name"`
-	FieldID string `json:"fieldId"`
+    Name    string `json:"name"`
+    FieldID string `json:"fieldId"`
 }

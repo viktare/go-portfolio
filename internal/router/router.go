@@ -30,11 +30,18 @@ func Setup(r *gin.Engine, pool *pgxpool.Pool) {
 
         // Technologies
         admin.GET("/technology-fields", handlers.GetTechnologyFields(pool))
-        
+
         admin.GET("/technologies", handlers.GetTechnologies(pool))
         admin.POST("/technologies", handlers.CreateTechnology(pool))
 		admin.GET("/technologies/:technologyID", handlers.GetTechnology(pool))
         admin.PUT("/technologies/:technologyID", handlers.UpdateTechnology(pool))
         admin.DELETE("/technologies/:technologyID", handlers.DeleteTechnology(pool))
+
+        // Technologies
+        admin.GET("/projects", handlers.GetProjects(pool))
+        admin.POST("/projects", handlers.CreateProject(pool))
+		admin.GET("/projects/:projectID", handlers.GetProject(pool))
+        admin.PUT("/projects/:projectID", handlers.UpdateProject(pool))
+        admin.DELETE("/projects/:projectID", handlers.DeleteProject(pool))
 	}
 }

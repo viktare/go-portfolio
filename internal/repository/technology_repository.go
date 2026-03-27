@@ -9,18 +9,11 @@ import (
 	"github.com/viktare/go-portfolio/internal/models"
 )
 
-// =============================================================================
-// TechnologyField
-// =============================================================================
-
 func GetTechnologyFields(pool *pgxpool.Pool) ([]models.TechnologyField, error) {
 	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
 	defer cancel()
 
-	query := `
-		SELECT id, name, code
-		FROM technology_fields
-	`
+	query := `SELECT id, name, code FROM technology_fields`
 
 	fields := make([]models.TechnologyField, 0)
 	rows, err := pool.Query(ctx, query)
@@ -31,8 +24,7 @@ func GetTechnologyFields(pool *pgxpool.Pool) ([]models.TechnologyField, error) {
 
 	for rows.Next() {
 		var f models.TechnologyField
-		err := rows.Scan(&f.ID, &f.Name, &f.Code)
-		if err != nil {
+		if err := rows.Scan(&f.ID, &f.Name, &f.Code); err != nil {
 			return nil, err
 		}
 		fields = append(fields, f)
@@ -44,10 +36,6 @@ func GetTechnologyFields(pool *pgxpool.Pool) ([]models.TechnologyField, error) {
 
 	return fields, nil
 }
-
-// =============================================================================
-// Technology
-// =============================================================================
 
 func CreateTechnology(pool *pgxpool.Pool, input models.CreateTechnology) (*models.Technology, error) {
 	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
@@ -83,7 +71,8 @@ func UpdateTechnology(pool *pgxpool.Pool, technologyID string, input models.Upda
 	query := `
 		UPDATE technologies
 		SET name     = $1,
-		    field_id = $2
+		    code     = $2,
+		    field_id = $3
 		WHERE id = $4
 		RETURNING id, name, code
 	`
@@ -170,9 +159,7 @@ func DeleteTechnology(pool *pgxpool.Pool, technologyID string) error {
 	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
 	defer cancel()
 
-	query := `DELETE FROM technologies WHERE id = $1`
-
-	result, err := pool.Exec(ctx, query, technologyID)
+	result, err := pool.Exec(ctx, `DELETE FROM technologies WHERE id = $1`, technologyID)
 	if err != nil {
 		return err
 	}
@@ -184,18 +171,13 @@ func DeleteTechnology(pool *pgxpool.Pool, technologyID string) error {
 	return nil
 }
 
-// =============================================================================
-// Helpers
-// =============================================================================
-
 func getTechnologyField(pool *pgxpool.Pool, fieldID string) (*models.TechnologyField, error) {
 	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
 	defer cancel()
 
-	query := `SELECT id, name, code FROM technology_fields WHERE id = $1`
-
 	var f models.TechnologyField
-	err := pool.QueryRow(ctx, query, fieldID).Scan(&f.ID, &f.Name, &f.Code)
+	err := pool.QueryRow(ctx, `SELECT id, name, code FROM technology_fields WHERE id = $1`, fieldID).
+		Scan(&f.ID, &f.Name, &f.Code)
 	if err != nil {
 		return nil, err
 	}

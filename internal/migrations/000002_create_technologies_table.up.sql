@@ -1,14 +1,14 @@
 CREATE TABLE IF NOT EXISTS technology_fields (
-    id   SERIAL       PRIMARY KEY,
+    id   VARCHAR(36)  PRIMARY KEY DEFAULT gen_random_uuid(),
     name VARCHAR(100) NOT NULL,
     code VARCHAR(100) NOT NULL UNIQUE
 );
 
 CREATE TABLE IF NOT EXISTS technologies (
-    id       SERIAL       PRIMARY KEY,
+    id       VARCHAR(36)  PRIMARY KEY DEFAULT gen_random_uuid(),
     name     VARCHAR(100) NOT NULL,
     code     VARCHAR(100) NOT NULL UNIQUE,
-    field_id INT          NOT NULL,
+    field_id VARCHAR(36)  NOT NULL,
 
     CONSTRAINT fk_technologies_field
         FOREIGN KEY (field_id)
