@@ -5,7 +5,7 @@ package models
 // =============================================================================
 
 type TechnologyField struct {
-	ID   string `json:"id"`
+	ID      int `json:"id"`
 	Name string `json:"name"` // "Backend"
 	Code string `json:"code"` // "backend"
 }
@@ -29,6 +29,5 @@ type CreateTechnology struct {
 
 type UpdateTechnology struct {
 	Name    string `json:"name"`
-	Code    string `json:"code"`
 	FieldID string `json:"fieldId"`
 }
