@@ -46,20 +46,21 @@ type UpdateUser struct {
 // =============================================================================
 
 type UserContact struct {
-	ID   string `json:"id"`
-	Name string `json:"name"` // "LinkedIn"
-	Code string `json:"code"` // "linkedin"
-	Link string `json:"link"` // "https://linkedin.com/in/..."
+    ID     string `json:"id"`
+    UserID string `json:"userId"`
+    Name   string `json:"name"`
+    Code   string `json:"code"`
+    Link   string `json:"link"`
 }
 
 type CreateUserContact struct {
-	Name string `json:"name"`
-	Code string `json:"code"`
-	Link string `json:"link"`
+    UserID string `json:"userId"`
+    Name   string `json:"name"`
+    Code   string `json:"code"`
+    Link   string `json:"link"`
 }
 
 type UpdateUserContact struct {
-	Name string `json:"name"`
-	Code string `json:"code"`
-	Link string `json:"link"`
+    Name string `json:"name"`
+    Link string `json:"link"`
 }

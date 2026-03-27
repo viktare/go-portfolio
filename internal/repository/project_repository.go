@@ -82,7 +82,7 @@ func UpdateProject(pool *pgxpool.Pool, projectID string, input models.UpdateProj
 		return nil, err
 	}
 
-	_, err = tx.Exec(ctx, `DELETE FROM project_technologies WHERE project_id = $1`, projectID)
+	_, err = tx.Exec(ctx, `DELETE FROM projects_technologies WHERE project_id = $1`, projectID)
 	if err != nil {
 		return nil, err
 	}
@@ -115,7 +115,7 @@ func GetProjects(pool *pgxpool.Pool) ([]models.Project, error) {
 		       t.id, t.name, t.code,
 		       f.id, f.name, f.code
 		FROM projects p
-		LEFT JOIN project_technologies pt ON pt.project_id = p.id
+		LEFT JOIN projects_technologies pt ON pt.project_id = p.id
 		LEFT JOIN technologies t          ON t.id = pt.technology_id
 		LEFT JOIN technology_fields f     ON f.id = t.field_id
 		ORDER BY p.id
@@ -191,7 +191,7 @@ func GetProject(pool *pgxpool.Pool, projectID string) (*models.Project, error) {
 		       t.id, t.name, t.code,
 		       f.id, f.name, f.code
 		FROM projects p
-		LEFT JOIN project_technologies pt ON pt.project_id = p.id
+		LEFT JOIN projects_technologies pt ON pt.project_id = p.id
 		LEFT JOIN technologies t          ON t.id = pt.technology_id
 		LEFT JOIN technology_fields f     ON f.id = t.field_id
 		WHERE p.id = $1
@@ -274,7 +274,7 @@ func DeleteProject(pool *pgxpool.Pool, projectID string) error {
 func insertProjectTechnologies(ctx context.Context, tx pgx.Tx, projectID string, technologyIDs []string) error {
 	for _, tID := range technologyIDs {
 		_, err := tx.Exec(ctx,
-			`INSERT INTO project_technologies (project_id, technology_id) VALUES ($1, $2)`,
+			`INSERT INTO projects_technologies (project_id, technology_id) VALUES ($1, $2)`,
 			projectID, tID,
 		)
 		if err != nil {
@@ -291,7 +291,7 @@ func getProjectTechnologies(pool *pgxpool.Pool, projectID string) ([]models.Tech
 	query := `
 		SELECT t.id, t.name, t.code,
 		       f.id, f.name, f.code
-		FROM project_technologies pt
+		FROM projects_technologies pt
 		JOIN technologies t      ON t.id = pt.technology_id
 		JOIN technology_fields f ON f.id = t.field_id
 		WHERE pt.project_id = $1

@@ -8,40 +8,59 @@ import (
 )
 
 func Setup(r *gin.Engine, pool *pgxpool.Pool) {
-    // Public — no auth
-    // public := r.Group("/public")
-    // {
-    //     public.GET("/portfolio", handlers.GetPortfolio(pool))
-    //     public.GET("/resume", handlers.GetResume(pool))
-    // }
 
-    // Admin — protected
-    admin := r.Group("/admin")
-    // admin.Use(AuthMiddleware())
-    {
-        // User
+	// Public — no auth
+	public := r.Group("/public")
+	{
+		public.GET("/user", handlers.GetUser(pool))
+        public.GET("/user/resume/download", handlers.DownloadResumeFile(pool))
+	}
 
-        // Companies
-        admin.GET("/companies", handlers.GetCompanies(pool))
-        admin.POST("/companies", handlers.CreateCompany(pool))
+	// Admin — protected
+	admin := r.Group("/admin")
+	// admin.Use(AuthMiddleware())
+	{
+		// User
+		admin.PUT("/user", handlers.UpdateUser(pool))
+
+		// Resume file
+		admin.POST("/user/resume", handlers.UploadResumeFile(pool))
+		admin.DELETE("/user/resume", handlers.DeleteResumeFile(pool))
+
+		// User contacts
+		admin.POST("/user/contacts", handlers.CreateUserContact(pool))
+		admin.PUT("/user/contacts/:contactID", handlers.UpdateUserContact(pool))
+		admin.DELETE("/user/contacts/:contactID", handlers.DeleteUserContact(pool))
+
+		// Companies
+		admin.GET("/companies", handlers.GetCompanies(pool))
+		admin.POST("/companies", handlers.CreateCompany(pool))
 		admin.GET("/companies/:companyID", handlers.GetCompany(pool))
-        admin.PUT("/companies/:companyID", handlers.UpdateCompany(pool))
-        admin.DELETE("/companies/:companyID", handlers.DeleteCompany(pool))
+		admin.PUT("/companies/:companyID", handlers.UpdateCompany(pool))
+		admin.DELETE("/companies/:companyID", handlers.DeleteCompany(pool))
 
-        // Technologies
-        admin.GET("/technology-fields", handlers.GetTechnologyFields(pool))
+		// Technology fields
+		admin.GET("/technology-fields", handlers.GetTechnologyFields(pool))
 
-        admin.GET("/technologies", handlers.GetTechnologies(pool))
-        admin.POST("/technologies", handlers.CreateTechnology(pool))
+		// Technologies
+		admin.GET("/technologies", handlers.GetTechnologies(pool))
+		admin.POST("/technologies", handlers.CreateTechnology(pool))
 		admin.GET("/technologies/:technologyID", handlers.GetTechnology(pool))
-        admin.PUT("/technologies/:technologyID", handlers.UpdateTechnology(pool))
-        admin.DELETE("/technologies/:technologyID", handlers.DeleteTechnology(pool))
+		admin.PUT("/technologies/:technologyID", handlers.UpdateTechnology(pool))
+		admin.DELETE("/technologies/:technologyID", handlers.DeleteTechnology(pool))
 
-        // Technologies
-        admin.GET("/projects", handlers.GetProjects(pool))
-        admin.POST("/projects", handlers.CreateProject(pool))
+		// Projects
+		admin.GET("/projects", handlers.GetProjects(pool))
+		admin.POST("/projects", handlers.CreateProject(pool))
 		admin.GET("/projects/:projectID", handlers.GetProject(pool))
-        admin.PUT("/projects/:projectID", handlers.UpdateProject(pool))
-        admin.DELETE("/projects/:projectID", handlers.DeleteProject(pool))
+		admin.PUT("/projects/:projectID", handlers.UpdateProject(pool))
+		admin.DELETE("/projects/:projectID", handlers.DeleteProject(pool))
+
+		// Experiences
+		admin.GET("/experiences", handlers.GetExperiences(pool))
+		admin.POST("/experiences", handlers.CreateExperience(pool))
+		admin.GET("/experiences/:experienceID", handlers.GetExperience(pool))
+		admin.PUT("/experiences/:experienceID", handlers.UpdateExperience(pool))
+		admin.DELETE("/experiences/:experienceID", handlers.DeleteExperience(pool))
 	}
 }

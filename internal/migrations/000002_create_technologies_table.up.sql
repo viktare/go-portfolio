@@ -10,7 +10,7 @@ CREATE TABLE IF NOT EXISTS technologies (
     code     VARCHAR(100) NOT NULL UNIQUE,
     field_id VARCHAR(36)  NOT NULL,
 
-    CONSTRAINT fk_technologies_field
+    CONSTRAINT fk_technologies_fields
         FOREIGN KEY (field_id)
         REFERENCES technology_fields(id)
         ON DELETE RESTRICT
