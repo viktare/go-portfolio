@@ -67,6 +67,7 @@ func GetUser(pool *pgxpool.Pool) (*models.User, error) {
 		return nil, err
 	}
 	u.Projects = projects
+	u.Age = u.UserAge();
 
 	return &u, nil
 }

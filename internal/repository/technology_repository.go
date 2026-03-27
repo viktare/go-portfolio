@@ -71,24 +71,26 @@ func UpdateTechnology(pool *pgxpool.Pool, technologyID string, input models.Upda
 	query := `
 		UPDATE technologies
 		SET name     = $1,
-		    code     = $2,
-		    field_id = $3
-		WHERE id = $4
+		    field_id = $2
+		WHERE id = $3
 		RETURNING id, name, code
 	`
 
 	var t models.Technology
-	err := pool.QueryRow(ctx, query, input.Name, input.FieldID, technologyID).Scan(
-		&t.ID, &t.Name, &t.Code,
-	)
-	if err != nil {
-		return nil, err
-	}
 
 	field, err := getTechnologyField(pool, input.FieldID)
 	if err != nil {
 		return nil, err
 	}
+
+	err = pool.QueryRow(ctx, query, input.Name, input.FieldID, technologyID).Scan(
+		&t.ID, &t.Name, &t.Code,
+	)
+	
+	if err != nil {
+		return nil, err
+	}
+
 	t.Field = *field
 
 	return &t, nil

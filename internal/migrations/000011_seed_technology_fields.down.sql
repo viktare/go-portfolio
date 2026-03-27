@@ -1,0 +1,1 @@
+DELETE FROM technology_fields;

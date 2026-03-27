@@ -11,6 +11,7 @@ type User struct {
 	Name        string        `json:"name"`
 	Surname     string        `json:"surname"`
 	Bio         string        `json:"bio"`
+	Age         int           `json:"age"`
 	BirthDate   *time.Time    `json:"birthDate,omitempty"`
 	Location    string        `json:"location"`
 	Contacts    []UserContact `json:"contacts"`
@@ -20,7 +21,7 @@ type User struct {
 }
 
 // Age computes age from BirthDate so it never goes stale
-func (u User) Age() int {
+func (u User) UserAge() int {
 	if u.BirthDate == nil {
 		return 0
 	}
