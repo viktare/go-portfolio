@@ -35,7 +35,7 @@ func CreateCompany(pool *pgxpool.Pool, input models.CreateCompanyDTO) (*models.C
 	return &company, nil
 }
 
-func UpdateCompany(pool *pgxpool.Pool, input models.UpdateCompanyDTO) (*models.Company, error) {
+func UpdateCompany(pool *pgxpool.Pool, companyID string, input models.UpdateCompanyDTO) (*models.Company, error) {
 	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
 
 	defer cancel()
@@ -46,11 +46,12 @@ func UpdateCompany(pool *pgxpool.Pool, input models.UpdateCompanyDTO) (*models.C
 			address = $2,
 			website = $3,
 			logo = $4 
+		WHERE id = $5
 		RETURNING id, name, address, website, logo
 	`
 	var company models.Company
 
-	err := pool.QueryRow(ctx, query, input.Name, input.Address, input.Website, input.Logo).Scan(
+	err := pool.QueryRow(ctx, query, input.Name, input.Address, input.Website, input.Logo, companyID).Scan(
 		&company.ID,
 		&company.Name,
 		&company.Address,

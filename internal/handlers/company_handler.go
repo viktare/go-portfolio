@@ -30,17 +30,19 @@ func CreateCompany(pool *pgxpool.Pool) gin.HandlerFunc {
 
 func UpdateCompany(pool *pgxpool.Pool) gin.HandlerFunc {
 	return func(ctx *gin.Context) {
-		var input models.UpdateCompanyDTO
+		id := ctx.Param("companyID")
 
+		var input models.UpdateCompanyDTO
 		if err := ctx.ShouldBindJSON(&input); err != nil {
 			ctx.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 			return
 		}
 
-		product, err := repository.UpdateCompany(pool, input)
+		product, err := repository.UpdateCompany(pool, id, input)
 
 		if err != nil {
 			ctx.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+			return
 		}
 
 		ctx.JSON(http.StatusOK, product)
