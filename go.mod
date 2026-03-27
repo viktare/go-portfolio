@@ -6,7 +6,7 @@ require (
 	github.com/gin-gonic/gin v1.12.0
 	github.com/jackc/pgx/v5 v5.8.0
 	github.com/joho/godotenv v1.5.1
-	github.com/viktare/go-commerce v0.0.0-20260313165405-b80bef4b69f6
+	github.com/viktare/go-portfolio v0.0.0-20260313165405-b80bef4b69f6
 )
 
 require (

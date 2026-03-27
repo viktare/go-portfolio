@@ -6,30 +6,25 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/viktare/go-portfolio/internal/config"
 	"github.com/viktare/go-portfolio/internal/database"
+	"github.com/viktare/go-portfolio/internal/router"
 )
 
 func main() {
-	cfg, err := config.Load()
+    cfg, err := config.Load()
+    if err != nil {
+        log.Fatal("Failed to load configuration:", err)
+    }
 
-	if err != nil {
-		log.Fatal("Failed to load configuration:", err)
-	}
+    pool, err := database.Connect(cfg.DatabaseURL)
+    if err != nil {
+        log.Fatal("Failed to connect to database:", err)
+    }
+    defer pool.Close()
 
-	pool, err := database.Connect(cfg.DatabaseURL)
-	if err != nil {
-		log.Fatal("Failed to connect to database:", err)
-	}
+    r := gin.Default()
+    r.SetTrustedProxies(nil)
 
-	defer pool.Close()
+    router.Setup(r, pool)
 
-	router := gin.Default()
-	router.SetTrustedProxies(nil)
-	router.GET("/", func(ctx *gin.Context) {
-		ctx.JSON(200, gin.H{
-			"message": "Server running",
-		})
-	})
-
-
-	router.Run(":" + cfg.Port)
+    r.Run(":" + cfg.Port)
 }

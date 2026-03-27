@@ -5,21 +5,21 @@ package models
 // =============================================================================
 
 type Company struct {
-	ID      string `json:"id"`
+	ID      int `json:"id"`
 	Name    string `json:"name"`
 	Address string `json:"address"`
-	Website string `json:"website,omitempty"`
-	Logo    string `json:"logo,omitempty"`
+	Website *string `json:"website"`
+	Logo    *string `json:"logo"`
 }
 
-type CreateCompany struct {
-	Name    string `json:"name"`
-	Address string `json:"address"`
+type CreateCompanyDTO struct {
+	Name    string `json:"name" binding:"required"`
+	Address string `json:"address" binding:"required"`
 	Website string `json:"website"`
 	Logo    string `json:"logo"`
 }
 
-type UpdateCompany struct {
+type UpdateCompanyDTO struct {
 	Name    string `json:"name"`
 	Address string `json:"address"`
 	Website string `json:"website"`
