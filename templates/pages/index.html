@@ -1,0 +1,369 @@
+{{define "base"}}
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>{{.Name}} {{.Surname}} — Portfolio</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:ital,wght@0,300;0,400;0,500;1,300&family=DM+Mono:wght@400;500&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="/static/css/style.css" />
+    <!-- Alpine Plugins -->
+    <script
+      defer
+      src="https://cdn.jsdelivr.net/npm/@alpinejs/intersect@3.x.x/dist/cdn.min.js"
+    ></script>
+    <!-- Alpine Core -->
+    <script
+      defer
+      src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"
+    ></script>
+  </head>
+  <body x-data="portfolio()" x-cloak>
+    <!-- ============================================================
+         NAV
+         ============================================================ -->
+    <nav class="nav" x-data="{ menuOpen: false }">
+      <div class="nav__inner">
+        <a href="#home" class="nav__logo" @click.prevent="scrollTo('home')">
+          {{.Name}}<span class="nav__logo-dot">.</span>
+        </a>
+        <ul class="nav__links">
+          <li>
+            <a
+              href="#home"
+              @click.prevent="scrollTo('home')"
+              :class="activeSection === 'home' && 'active'"
+              >Home</a
+            >
+          </li>
+          <li>
+            <a
+              href="#experience"
+              @click.prevent="scrollTo('experience')"
+              :class="activeSection === 'experience' && 'active'"
+              >Experience</a
+            >
+          </li>
+          <li>
+            <a
+              href="#projects"
+              @click.prevent="scrollTo('projects')"
+              :class="activeSection === 'projects' && 'active'"
+              >Projects</a
+            >
+          </li>
+          <li>
+            <a
+              href="#about"
+              @click.prevent="scrollTo('about')"
+              :class="activeSection === 'about' && 'active'"
+              >About</a
+            >
+          </li>
+        </ul>
+        <a href="#about" @click.prevent="scrollTo('about')" class="nav__cta"
+          >get in touch</a
+        >
+        <button
+          class="nav__hamburger"
+          @click="menuOpen = !menuOpen"
+          :aria-label="menuOpen ? 'Close menu' : 'Open menu'"
+        >
+          <span x-text="menuOpen ? '✕' : '☰'"></span>
+        </button>
+      </div>
+      <div class="nav__mobile" x-show="menuOpen" x-transition.opacity>
+        <a href="#home" @click.prevent="scrollTo('home'); menuOpen = false"
+          >Home</a
+        >
+        <a
+          href="#experience"
+          @click.prevent="scrollTo('experience'); menuOpen = false"
+          >Experience</a
+        >
+        <a
+          href="#projects"
+          @click.prevent="scrollTo('projects'); menuOpen = false"
+          >Projects</a
+        >
+        <a href="#about" @click.prevent="scrollTo('about'); menuOpen = false"
+          >About</a
+        >
+      </div>
+    </nav>
+
+    <!-- ============================================================
+         HOME / HERO
+         ============================================================ -->
+    <section id="home" class="section section--hero">
+      <div class="hero__inner">
+        <p
+          class="hero__eyebrow reveal"
+          x-intersect.once="$el.classList.add('visible')"
+        >
+          Backend Engineer
+        </p>
+
+        <h1
+          class="hero__name reveal"
+          x-intersect.once="$el.classList.add('visible')"
+          style="transition-delay: 0.1s"
+        >
+          Hey!<br /><em>I'm Viktor Stevanovic</em>
+        </h1>
+
+        <p
+          class="hero__bio reveal"
+          x-intersect.once="$el.classList.add('visible')"
+          style="transition-delay: 0.2s"
+        >
+          {{.Bio}}
+        </p>
+
+        <div
+          class="hero__actions reveal"
+          x-intersect.once="$el.classList.add('visible')"
+          style="transition-delay: 0.3s"
+        >
+          <a href="/public/resume" class="btn btn--primary" download
+            >↓ Resume</a
+          >
+          {{range .Contacts}}
+          <a
+            href="{{.Link}}"
+            target="_blank"
+            rel="noopener"
+            class="btn btn--ghost"
+            >{{.Name}}</a
+          >
+          {{end}}
+        </div>
+
+        <div
+          class="hero__meta reveal"
+          x-intersect.once="$el.classList.add('visible')"
+          style="transition-delay: 0.4s"
+          x-data="clock()"
+          x-init="start()"
+        >
+          <div class="hero__meta-item">
+            <span class="status-dot"></span>
+            {{.Location}}
+          </div>
+          <div class="hero__meta-item hero__meta-item--separator">·</div>
+          <div class="hero__meta-item">
+            <span x-text="currentTime"></span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============================================================
+         EXPERIENCE
+         ============================================================ -->
+    <section id="experience" class="section">
+      <div
+        class="section__label reveal"
+        x-intersect.once="$el.classList.add('visible')"
+      >
+        Experience
+      </div>
+
+      <div
+        class="timeline stagger"
+        x-intersect.once="$el.classList.add('visible')"
+      >
+        {{range .Experiences}}
+        <div class="timeline__item">
+          <div class="timeline__aside">
+            <span class="timeline__dates">
+              {{.StartDate.Format "Jan 2006"}} — {{if .IsCurrent}}<span
+                class="badge"
+                >now</span
+              >{{else}}{{.EndDate.Format "Jan 2006"}}{{end}}
+            </span>
+          </div>
+          <div class="timeline__body">
+            <div class="timeline__header">
+              <span class="timeline__role">{{.Role}}</span>
+              <span class="timeline__company">
+                {{if .Company.Website}}
+                <a href="{{.Company.Website}}" target="_blank" rel="noopener"
+                  >{{.Company.Name}}</a
+                >
+                {{else}}{{.Company.Name}}{{end}} · {{.Company.Address}}
+              </span>
+            </div>
+            <p class="timeline__desc">{{.Description}}</p>
+            <div class="tags">
+              {{range .Technologies}}
+              <span class="tag" data-field="{{.Field.Code}}">{{.Name}}</span>
+              {{end}}
+            </div>
+          </div>
+        </div>
+        {{end}}
+      </div>
+    </section>
+
+    <!-- ============================================================
+         PROJECTS
+         ============================================================ -->
+    <section id="projects" class="section">
+      <div
+        class="section__label reveal"
+        x-intersect.once="$el.classList.add('visible')"
+      >
+        Projects
+      </div>
+
+      <div
+        class="projects-grid stagger"
+        x-intersect.once="$el.classList.add('visible')"
+      >
+        {{range .Projects}}
+        <div class="project-card">
+          <div class="project-card__top">
+            <span class="project-card__name">{{.Name}}</span>
+            <span
+              class="project-card__status project-card__status--{{.Status}}"
+            >
+              {{if eq .Status "in_progress"}}in
+              progress{{else}}{{.Status}}{{end}}
+            </span>
+          </div>
+          <p class="project-card__desc">{{.Description}}</p>
+          <div class="project-card__footer">
+            <div class="tags">
+              {{range .Technologies}}
+              <span class="tag" data-field="{{.Field.Code}}">{{.Name}}</span>
+              {{end}}
+            </div>
+            {{if .Link}}
+            <a
+              href="{{.Link}}"
+              target="_blank"
+              rel="noopener"
+              class="project-card__link"
+            >
+              view →
+            </a>
+            {{end}}
+          </div>
+        </div>
+        {{end}}
+      </div>
+    </section>
+
+    <!-- ============================================================
+         ABOUT
+         ============================================================ -->
+    <section id="about" class="section">
+      <div
+        class="section__label reveal"
+        x-intersect.once="$el.classList.add('visible')"
+      >
+        About
+      </div>
+
+      <div
+        class="about__content reveal"
+        x-intersect.once="$el.classList.add('visible')"
+      >
+        <div class="about__text">{{.Bio}}</div>
+        <div class="about__details">
+          <div class="about__detail">
+            <div class="about__detail-label">Location</div>
+            <div class="about__detail-value">{{.Location}}</div>
+          </div>
+          <div class="about__detail">
+            <div class="about__detail-label">Age</div>
+            <div class="about__detail-value">{{.Age}}</div>
+          </div>
+          <div class="about__detail">
+            <div class="about__detail-label">Connect</div>
+            <div class="about__detail-value about__detail-value--links">
+              {{range .Contacts}}
+              <a href="{{.Link}}" target="_blank" rel="noopener">{{.Name}}</a>
+              {{end}}
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============================================================
+         FOOTER
+         ============================================================ -->
+    <footer class="footer">
+      <div class="footer__links">
+        {{range .Contacts}}
+        <a href="{{.Link}}" target="_blank" rel="noopener">{{.Name}}</a>
+        {{end}}
+      </div>
+      <p class="footer__copy">
+        built with Go + Alpine.js · {{.Name}} {{.Surname}}
+      </p>
+    </footer>
+
+    <!-- ============================================================
+         ALPINE JS
+         ============================================================ -->
+    <script>
+      document.addEventListener("alpine:init", () => {
+        Alpine.data("portfolio", () => ({
+          activeSection: "home",
+
+          init() {
+            const sections = document.querySelectorAll(".section");
+            const observer = new IntersectionObserver(
+              (entries) => {
+                entries.forEach((entry) => {
+                  if (entry.isIntersecting && entry.target.id) {
+                    this.activeSection = entry.target.id;
+                  }
+                });
+              },
+              { threshold: 0.25 },
+            );
+            sections.forEach((s) => {
+              if (s.id) observer.observe(s);
+            });
+          },
+
+          scrollTo(id) {
+            document.getElementById(id)?.scrollIntoView({ behavior: "smooth" });
+          },
+        }));
+
+        Alpine.data("clock", () => ({
+          currentTime: "",
+          interval: null,
+
+          start() {
+            this.tick();
+            this.interval = setInterval(() => this.tick(), 1000);
+          },
+
+          tick() {
+            this.currentTime = new Date().toLocaleTimeString("it-IT", {
+              hour: "2-digit",
+              minute: "2-digit",
+              second: "2-digit",
+            });
+          },
+
+          destroy() {
+            clearInterval(this.interval);
+          },
+        }));
+      });
+    </script>
+  </body>
+</html>
+{{end}}

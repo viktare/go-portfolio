@@ -9,6 +9,9 @@ import (
 
 func Setup(r *gin.Engine, pool *pgxpool.Pool) {
 
+	r.GET("/", handlers.GetPortfolio(pool))
+	r.Static("/static", "./static")
+
 	// Public — no auth
 	public := r.Group("/public")
 	{
